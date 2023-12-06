@@ -14,4 +14,6 @@ public class Videojuego {
     private String nombre;
     @Column(name = "precio", nullable = false)
     private float precio;
+    @Column(name = "fabricante", nullable = false, length = 45)
+    private String fabricante;
 }
