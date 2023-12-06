@@ -6,11 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class VideojuegoService {
     @Autowired
     private VideojuegoRepository videojuegoRepository;
+
+    public Optional<Videojuego> getVideojuegoById(int id) {
+        return videojuegoRepository.findById(id);
+    }
 
     public List<Videojuego> getAllVideojuegos() {
         return videojuegoRepository.findAll();
