@@ -28,4 +28,13 @@ public class VideojuegoService {
     public List<Videojuego> getAllVideojuegos() {
         return videojuegoRepository.findAll();
     }
+
+    public boolean nuevoVideojuego(Videojuego nuevoVideojuego) {
+        try {
+            videojuegoRepository.save(nuevoVideojuego);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
 }

@@ -3,10 +3,12 @@ package com.prueba_videojuegos.prueba_videojuegos.controller;
 import com.prueba_videojuegos.prueba_videojuegos.exceptions.ListaVaciaException;
 import com.prueba_videojuegos.prueba_videojuegos.model.Videojuego;
 import com.prueba_videojuegos.prueba_videojuegos.service.VideojuegoService;
-import com.prueba_videojuegos.prueba_videojuegos.exceptions.ListaVaciaException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -58,5 +60,20 @@ public class VideojuegoController {
         } catch (ListaVaciaException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
+    }
+
+    @PostMapping("/nuevo")
+    public ResponseEntity<String> nuevoVideojuego(@Valid @RequestBody Videojuego nuevoVideojuego, BindingResult result) {
+        if (result.hasErrors()) {
+            StringBuilder mensajeError = new StringBuilder();
+            result.getFieldErrors().forEach(error -> {
+                mensajeError.append(error.getDefaultMessage()).append(". ");
+            });
+            return ResponseEntity.badRequest().body("Datos incorrectos: " + mensajeError);
+        }
+        if (!videojuegoService.nuevoVideojuego(nuevoVideojuego)) {
+            return ResponseEntity.internalServerError().body("Ocurrió un error al crear el videojuego");
+        }
+        return ResponseEntity.created(java.net.URI.create("/videojuegos")).body("Videojuego creado exitosamente");
     }
 }
