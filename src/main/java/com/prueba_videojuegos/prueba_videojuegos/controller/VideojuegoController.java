@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +15,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/videojuegos")
 public class VideojuegoController {
     @Autowired
@@ -62,7 +62,7 @@ public class VideojuegoController {
         }
     }
 
-    @PostMapping("/nuevo")
+    @PostMapping(path = "/nuevo", consumes = "application/json")
     public ResponseEntity<String> nuevoVideojuego(@Valid @RequestBody Videojuego nuevoVideojuego, BindingResult result) {
         if (result.hasErrors()) {
             StringBuilder mensajeError = new StringBuilder();
@@ -74,6 +74,6 @@ public class VideojuegoController {
         if (!videojuegoService.nuevoVideojuego(nuevoVideojuego)) {
             return ResponseEntity.internalServerError().body("Ocurrió un error al crear el videojuego");
         }
-        return ResponseEntity.created(java.net.URI.create("/videojuegos")).body("Videojuego creado exitosamente");
+        return new ResponseEntity<>("Videojuego creado exitosamente", HttpStatus.CREATED);
     }
 }
