@@ -41,9 +41,16 @@ public class VideojuegoController {
     @GetMapping("/")
     public ResponseEntity<?> getVideojuegosByAtributo(
             @RequestParam(required = false, defaultValue = "") String nombre,
-            @RequestParam(required = false, defaultValue = "") String fabricante) {
+            @RequestParam(required = false, defaultValue = "") String fabricante,
+            @RequestParam(required = false, defaultValue = "AND") String tipoFiltrado) {
         try {
-            List<Videojuego> videojuegos = videojuegoService.getVideojuegoByAtributo(nombre, fabricante);
+            List<Videojuego> videojuegos = null;
+            if (tipoFiltrado.equals("AND")) {
+                videojuegos = videojuegoService.getVideojuegoByAndAtributo(nombre, fabricante);
+            } else if (tipoFiltrado.equals("OR")) {
+                videojuegos = videojuegoService.getVideojuegoByOrAtributo(nombre, fabricante);
+            }
+
             if (videojuegos.isEmpty()) {
                 throw new ListaVaciaException("Ningún videojuego filtrado");
             }

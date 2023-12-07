@@ -13,14 +13,12 @@ public class VideojuegoService {
     @Autowired
     private VideojuegoRepository videojuegoRepository;
 
-    public List<Videojuego> getVideojuegoByAtributo(String nombre, String fabricante) {
-        if (!nombre.isEmpty() && !fabricante.isEmpty()) {
-            return videojuegoRepository.findByNombreAndFabricante(nombre, fabricante);
-        }
-        if (!nombre.isEmpty()) {
-            return videojuegoRepository.findByNombre(nombre);
-        }
-        return videojuegoRepository.findByFabricante(fabricante);
+    public List<Videojuego> getVideojuegoByAndAtributo(String nombre, String fabricante) {
+        return videojuegoRepository.findByNombreAndFabricante(nombre, fabricante);
+    }
+
+    public List<Videojuego> getVideojuegoByOrAtributo(String nombre, String fabricante) {
+        return videojuegoRepository.findByNombreOrFabricante(nombre, fabricante);
     }
 
     public Optional<Videojuego> getVideojuegoById(int id) {
