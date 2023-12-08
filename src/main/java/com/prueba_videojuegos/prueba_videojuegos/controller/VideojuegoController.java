@@ -151,6 +151,8 @@ public class VideojuegoController {
             Videojuego videojuego = videojuegoService.getVideojuegoById(id).get();
             videojuegoService.deleteVideojuego(videojuego);
             return new ResponseEntity<>("Videojuego eliminado correctamente", HttpStatus.NO_CONTENT);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
