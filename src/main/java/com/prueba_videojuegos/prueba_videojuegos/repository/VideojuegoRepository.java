@@ -12,4 +12,5 @@ public interface VideojuegoRepository extends JpaRepository<Videojuego, Integer>
     List<Videojuego> findByFabricante(String fabricante);
     List<Videojuego> findByNombreAndFabricante(String nombre, String fabricante);
     List<Videojuego> findByNombreOrFabricante(String nombre, String fabricante);
+    List<Videojuego> findByNombreContaining(String nombre);
 }

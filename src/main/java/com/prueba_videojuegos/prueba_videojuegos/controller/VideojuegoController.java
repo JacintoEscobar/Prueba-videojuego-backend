@@ -23,9 +23,18 @@ public class VideojuegoController {
     private VideojuegoService videojuegoService;
 
     @GetMapping
-    public ResponseEntity<List<Videojuego>> getAllVideojuegos() {
-        List<Videojuego> videojuegos = videojuegoService.getAllVideojuegos();
-        return new ResponseEntity<>(videojuegos, HttpStatus.OK);
+    public ResponseEntity<?> getAllVideojuegos(@RequestParam(value = "term", defaultValue = "") String nombre) {
+        if (nombre.isEmpty()) {
+            List<Videojuego> videojuegos = videojuegoService.getAllVideojuegos();
+            return new ResponseEntity<>(videojuegos, HttpStatus.OK);
+        }
+
+        try {
+            List<Videojuego> videojuegosFiltrados = videojuegoService.getAllVideojuegoByNombre(nombre);
+            return ResponseEntity.ok(videojuegosFiltrados);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
     }
 
     @GetMapping("/{id}")
@@ -42,10 +51,7 @@ public class VideojuegoController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<?> getVideojuegosByAtributo(
-            @RequestParam(required = false, defaultValue = "") String nombre,
-            @RequestParam(required = false, defaultValue = "") String fabricante,
-            @RequestParam(required = false, defaultValue = "AND") String tipoFiltrado) {
+    public ResponseEntity<?> getVideojuegosByAtributo(@RequestParam(required = false, defaultValue = "") String nombre, @RequestParam(required = false, defaultValue = "") String fabricante, @RequestParam(required = false, defaultValue = "AND") String tipoFiltrado) {
         try {
             List<Videojuego> videojuegos = null;
             if (tipoFiltrado.equals("AND")) {
@@ -95,7 +101,6 @@ public class VideojuegoController {
         }
 
         if (camposActualizados.containsKey("precio") && camposActualizados.get("precio") != null) {
-
             videojuegoExistente.setPrecio((double) camposActualizados.get("precio"));
         }
 
@@ -110,5 +115,27 @@ public class VideojuegoController {
         }
 
         return new ResponseEntity<>("Actualización exitosa", HttpStatus.OK);
+    }
+
+    @PutMapping(path = "/{id}/actualizar", consumes = "application/json")
+    public ResponseEntity<String> putUpdateVideojuego(@PathVariable int id, @Valid @RequestBody Videojuego videojuegoModificado, BindingResult result) {
+        if (result.hasErrors()) {
+            StringBuilder mensajeError = new StringBuilder();
+            result.getFieldErrors().forEach(error -> {
+                mensajeError.append("Error: " + error.getDefaultMessage() + "\n");
+            });
+            return ResponseEntity.badRequest().body("--Datos incorrectos--\n " + mensajeError);
+        }
+
+        try {
+            videojuegoService.getVideojuegoById(id).get();
+            videojuegoService.guardarVideojuego(videojuegoModificado);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+
+        return ResponseEntity.ok("Videjouego actualizado correctamente.");
     }
 }

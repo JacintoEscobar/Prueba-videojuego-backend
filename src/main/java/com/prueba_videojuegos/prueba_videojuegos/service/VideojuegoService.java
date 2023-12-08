@@ -41,4 +41,8 @@ public class VideojuegoService {
     public void guardarVideojuego(Videojuego videojuego) throws Exception {
         videojuegoRepository.save(videojuego);
     }
+
+    public List<Videojuego> getAllVideojuegoByNombre(String nombre) throws Exception {
+        return videojuegoRepository.findByNombreContaining(nombre);
+    }
 }
