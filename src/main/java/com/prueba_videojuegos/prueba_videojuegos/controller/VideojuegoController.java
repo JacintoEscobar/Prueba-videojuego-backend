@@ -90,15 +90,16 @@ public class VideojuegoController {
 
         Videojuego videojuegoExistente = videojuegoService.getVideojuegoById(id).get();
 
-        if (camposActualizados.containsKey("nombre")) {
+        if (camposActualizados.containsKey("nombre") && !camposActualizados.get("nombre").toString().isBlank()) {
             videojuegoExistente.setNombre((String) camposActualizados.get("nombre"));
         }
 
-        if (camposActualizados.containsKey("precio")) {
+        if (camposActualizados.containsKey("precio") && camposActualizados.get("precio") != null) {
+
             videojuegoExistente.setPrecio((double) camposActualizados.get("precio"));
         }
 
-        if (camposActualizados.containsKey("fabricante")) {
+        if (camposActualizados.containsKey("fabricante") && !camposActualizados.get("fabricante").toString().isBlank()) {
             videojuegoExistente.setFabricante((String) camposActualizados.get("fabricante"));
         }
 
