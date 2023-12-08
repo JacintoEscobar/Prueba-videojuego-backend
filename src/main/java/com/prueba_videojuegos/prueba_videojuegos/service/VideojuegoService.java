@@ -37,4 +37,8 @@ public class VideojuegoService {
         }
         return true;
     }
+
+    public void guardarVideojuego(Videojuego videojuego) throws Exception {
+        videojuegoRepository.save(videojuego);
+    }
 }

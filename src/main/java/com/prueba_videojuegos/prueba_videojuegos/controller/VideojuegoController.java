@@ -11,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -31,7 +32,7 @@ public class VideojuegoController {
     public ResponseEntity<?> getVideojuegoById(@PathVariable int id) {
         try {
             Optional<Videojuego> videojuego = videojuegoService.getVideojuegoById(id);
-            if (!videojuego.isPresent()) {
+            if (videojuego.isEmpty()) {
                 throw new NoSuchElementException("Videojuego no encontrado");
             }
             return new ResponseEntity<>(videojuego.get(), HttpStatus.FOUND);
@@ -75,5 +76,27 @@ public class VideojuegoController {
             return ResponseEntity.internalServerError().body("Ocurrió un error al crear el videojuego");
         }
         return new ResponseEntity<>("Videojuego creado exitosamente", HttpStatus.CREATED);
+    }
+
+    @PatchMapping(path = "/{id}/nombre", consumes = "application/json")
+    public ResponseEntity<String> patchUpdateVideojuego(@PathVariable int id, @RequestBody Map<?, Object> camposActualizados) {
+        if (videojuegoService.getVideojuegoById(id).isEmpty()) {
+            return new ResponseEntity<>("Videojuego no encontrado", HttpStatus.NOT_FOUND);
+        }
+
+        if (!camposActualizados.containsKey("nombre")) {
+            return new ResponseEntity<>("No se proporcionó el nombre", HttpStatus.BAD_REQUEST);
+        }
+
+        Videojuego videojuegoExistente = videojuegoService.getVideojuegoById(id).get();
+        videojuegoExistente.setNombre((String) camposActualizados.get("nombre"));
+
+        try {
+            videojuegoService.guardarVideojuego(videojuegoExistente);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>("Nombre actualizado correctamente", HttpStatus.OK);
     }
 }
