@@ -45,4 +45,8 @@ public class VideojuegoService {
     public List<Videojuego> getAllVideojuegoByNombre(String nombre) throws Exception {
         return videojuegoRepository.findByNombreContaining(nombre);
     }
+
+    public void deleteVideojuego(Videojuego videojuego) throws Exception {
+        videojuegoRepository.delete(videojuego);
+    }
 }

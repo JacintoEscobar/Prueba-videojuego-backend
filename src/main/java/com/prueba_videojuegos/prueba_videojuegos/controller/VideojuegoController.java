@@ -144,4 +144,15 @@ public class VideojuegoController {
 
         return ResponseEntity.ok("Videjouego actualizado correctamente.");
     }
+
+    @DeleteMapping(path = "/{id}/eliminar", consumes = "application/json")
+    public ResponseEntity<String> deleteVideojuego(@PathVariable int id) {
+        try {
+            Videojuego videojuego = videojuegoService.getVideojuegoById(id).get();
+            videojuegoService.deleteVideojuego(videojuego);
+            return new ResponseEntity<>("Videojuego eliminado correctamente", HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
 }
