@@ -128,7 +128,13 @@ public class VideojuegoController {
         }
 
         try {
-            videojuegoService.getVideojuegoById(id).get();
+            Videojuego videojuegoExistente = videojuegoService.getVideojuegoById(id).get();
+
+            videojuegoExistente.setId(id);
+            videojuegoExistente.setNombre(videojuegoModificado.getNombre());
+            videojuegoExistente.setPrecio(videojuegoModificado.getPrecio());
+            videojuegoExistente.setFabricante(videojuegoModificado.getFabricante());
+
             videojuegoService.guardarVideojuego(videojuegoModificado);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
