@@ -78,18 +78,29 @@ public class VideojuegoController {
         return new ResponseEntity<>("Videojuego creado exitosamente", HttpStatus.CREATED);
     }
 
-    @PatchMapping(path = "/{id}/nombre", consumes = "application/json")
+    @PatchMapping(path = "/{id}/actualizar", consumes = "application/json")
     public ResponseEntity<String> patchUpdateVideojuego(@PathVariable int id, @RequestBody Map<?, Object> camposActualizados) {
         if (videojuegoService.getVideojuegoById(id).isEmpty()) {
             return new ResponseEntity<>("Videojuego no encontrado", HttpStatus.NOT_FOUND);
         }
 
-        if (!camposActualizados.containsKey("nombre")) {
-            return new ResponseEntity<>("No se proporcionó el nombre", HttpStatus.BAD_REQUEST);
+        if (camposActualizados.isEmpty()) {
+            return new ResponseEntity<>("No se proporcionó ningún dato para actualizar", HttpStatus.BAD_REQUEST);
         }
 
         Videojuego videojuegoExistente = videojuegoService.getVideojuegoById(id).get();
-        videojuegoExistente.setNombre((String) camposActualizados.get("nombre"));
+
+        if (camposActualizados.containsKey("nombre")) {
+            videojuegoExistente.setNombre((String) camposActualizados.get("nombre"));
+        }
+
+        if (camposActualizados.containsKey("precio")) {
+            videojuegoExistente.setPrecio((double) camposActualizados.get("precio"));
+        }
+
+        if (camposActualizados.containsKey("fabricante")) {
+            videojuegoExistente.setFabricante((String) camposActualizados.get("fabricante"));
+        }
 
         try {
             videojuegoService.guardarVideojuego(videojuegoExistente);
@@ -97,6 +108,6 @@ public class VideojuegoController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<>("Nombre actualizado correctamente", HttpStatus.OK);
+        return new ResponseEntity<>("Actualización exitosa", HttpStatus.OK);
     }
 }

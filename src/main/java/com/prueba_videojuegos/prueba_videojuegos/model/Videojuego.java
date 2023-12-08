@@ -18,7 +18,7 @@ public class Videojuego {
     @NotNull(message = "El precio no debe ser nulo")
     @Min(value = 1, message = "El precio debe ser mayor de 0")
     @Column(name = "precio", nullable = false)
-    private float precio;
+    private double precio;
     @Column(name = "fabricante", nullable = false, length = 45)
     @NotEmpty(message = "El fabricante no puede estar vacío")
     @Size(min = 1, max = 45, message = "fabricante inválido")
